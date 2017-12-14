@@ -1,0 +1,24 @@
+---
+
+- name: upgrade gcc, libmpc, binutils, glibc
+  slackpkg: state=latest update_cache=true name={{ item }}
+  with_items:
+  - gcc
+  - libmpc
+  - binutils
+  - glibc
+
+- name: install flex
+  slackpkg: state=present name={{ item }}
+  with_items:
+  - flex
+
+- name: download node js 4.4.0
+  unarchive: src=http://nodejs.org/dist/v4.4.0/node-v4.4.0.tar.gz dest=/opt copy=no
+
+- name: install node js 4.4.0
+  shell: chdir=/opt/node-v4.4.0/ {{ item }}
+  with_items:
+  - ./configure
+  - make
+  - make install

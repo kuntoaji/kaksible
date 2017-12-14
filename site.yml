@@ -1,0 +1,9 @@
+---
+- name: Setup Slackware
+  hosts: kaklabs
+  remote_user: root
+
+  roles:
+    - nginx
+    - ruby
+    - nodejs

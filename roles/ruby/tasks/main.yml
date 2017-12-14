@@ -1,0 +1,20 @@
+---
+
+- name: download chruby
+  unarchive: src=http://github.com/postmodern/chruby/archive/v0.3.9.tar.gz dest=/opt copy=no
+
+- name: install chruby
+  shell: make install chdir=/opt/chruby-0.3.9/
+
+- name: download ruby 2.3.0
+  unarchive: src=http://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.0.tar.gz dest=/opt copy=no
+
+- name: install ruby 2.3.0
+  shell: chdir=/opt/ruby-2.3.0/ {{ item }}
+  with_items:
+  - ./configure --prefix=/opt/rubies/ruby-2.3.0
+  - make
+  - make install
+
+- name: copy bash_profile example home dir
+  template: src=bash_profile dest=/home/example/.bash_profile

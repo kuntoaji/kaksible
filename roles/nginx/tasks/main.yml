@@ -1,0 +1,39 @@
+---
+
+- name: install pcre, zlib, libxml2, libxslt, libpng, libjpeg
+  slackpkg: state=present update_cache=true name={{ item }}
+  with_items:
+  - pcre
+  - zlib
+  - libxml2
+  - libxslt
+  - libpng
+  - libjpeg
+
+- name: download GD library
+  unarchive: src=http://github.com/libgd/libgd/releases/download/gd-2.1.1/libgd-2.1.1.tar.gz dest=/opt copy=no
+
+- name: install GD library
+  shell: chdir=/opt/libgd-2.1.1/ {{ item }}
+  with_items:
+  - ./configure --with-png=/usr
+  - make
+  - make install
+
+- name: download and extract nginx slackbuild
+  unarchive: src=http://slackbuilds.org/slackbuilds/14.1/network/nginx.tar.gz  dest=/opt copy=no
+
+- name: download nginx 1.9.12
+  get_url: url=http://nginx.org/download/nginx-1.9.12.tar.gz dest=/opt/nginx
+
+- name: update slackbuild configuration
+  template: src=nginx.SlackBuild dest=/opt/nginx
+
+- name: run nginx slackbuild
+  command: ./nginx.SlackBuild chdir=/opt/nginx
+
+- name: install nginx
+  command: installpkg /tmp/nginx-1.9.12-x86_64-1_SBo.tgz
+
+- name: copy example configuration for nginx
+  template: src=example.conf dest=/etc/nginx/conf.d/example.conf
